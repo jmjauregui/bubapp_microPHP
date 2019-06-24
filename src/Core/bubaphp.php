@@ -1,6 +1,6 @@
 <?php 
-require_once('bubaphp/Configuratios.php'); 
-require_once('bubaphp/bubaphpController.php'); 
+require_once('Core/Configuratios.php'); 
+require_once('Core/bubaphpController.php'); 
 class Bubaphp{ 
     
     public function ifControllerExist($url) { 
