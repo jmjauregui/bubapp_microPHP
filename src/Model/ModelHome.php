@@ -2,7 +2,7 @@
 /**
  * 
  */
-class ModelHome extends bubaphpController
+class ModelHome extends bubaphpModel
 {
 	
 	function __construct()

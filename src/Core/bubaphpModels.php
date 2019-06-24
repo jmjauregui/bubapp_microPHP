@@ -4,7 +4,7 @@
 /**
  * 
  */
-class bubaphpController extends Bubaphp
+class bubaphpModel extends Bubaphp
 {
 	
 	function __construct()
