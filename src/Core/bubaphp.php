@@ -1,5 +1,5 @@
 <?php 
-require_once('Core/Configuratios.php'); 
+require_once('Core/Configurations.php'); 
 require_once('Core/bubaphpModels.php'); 
 class Bubaphp{ 
     
