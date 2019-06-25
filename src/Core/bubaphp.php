@@ -5,18 +5,18 @@ class Bubaphp{
     
     public function ifControllerExist($url) { 
         $nombre_fichero = $url;
-		if (file_exists($nombre_fichero)) {
-		    return true;
-		} else {
-		    return false;
-		}
+        if (file_exists($nombre_fichero)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
 
     public function prepareUrlView($url)
     {
-    	return 'views/'.$url.'.php';
+        return 'views/'.$url.'.php';
     }
 
     public function NOW()
@@ -37,6 +37,11 @@ class Bubaphp{
         return 'controller/'.$url.'.php';
     }
 
+    public function prepareUrlServices($url)
+    {
+        return 'controller/Services/'.$url.'.php';
+    }
+
     public function prepareUrlErrorPage($url)
     {
         return 'bubaphp/ErrorPages/'.$url.'.php';
@@ -45,19 +50,19 @@ class Bubaphp{
 
 
     public function loadView($get_Variable, $params = null){
-    	$urlFile = $this->prepareUrlView($get_Variable);
-    	if ($this->ifControllerExist($urlFile)) {
+        $urlFile = $this->prepareUrlView($get_Variable);
+        if ($this->ifControllerExist($urlFile)) {
             if ($params != null && $params != '') {
                $params = json_encode($params);
                $params = json_decode($params); 
             }
-    		include $urlFile;
-    	}else{
-    		$data = [
+            include $urlFile;
+        }else{
+            $data = [
                 'NombreVista' => $get_Variable,
             ];
             $this->ErrorPage('NoExistView', $data);
-    	}
+        }
     }
 
 
@@ -70,7 +75,7 @@ class Bubaphp{
             }
             include $urlFile;
         }else{
-            echo "File no exist";
+            echo "<center><br><br><br><h1>La pagina solicitada No Existe</h1></center>";
         }
     }
 
@@ -124,15 +129,21 @@ class Bubaphp{
         }
     }
 
+    public function LoadService($ServiceName){
+        $urlServiceResponse = $this->prepareUrlServices($ServiceName);
+        if (file_exists($urlServiceResponse)) {
+            $ServiceConfig = json_decode(file_get_contents('controller/Services/ServiceConfig.json'));
+            
+        }else{
+
+        }
+    }
+
     public function jsonPOST()
     {
         return json_decode(file_get_contents('php://input'));
     }
 
-    public function loadService($url)
-    {
-        
-    }
 } 
 $Bubaphp = new Bubaphp; 
 ?> 
