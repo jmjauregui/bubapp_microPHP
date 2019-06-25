@@ -85,7 +85,6 @@ class Bubaphp{
     }
 
 
-
     public function loadController($get_Variable){
         $processURL = explode('/', $get_Variable);
         $urlFile = $this->prepareUrlController($processURL[0]);
@@ -96,7 +95,11 @@ class Bubaphp{
                 if ($processURL[1] != '') {
                     try {
                         if (method_exists($ClassName,$processURL[1])) {
-                            $ClassName->$processURL[1]();
+                            if ($processURL[0] == 'Services') {
+                                $ClassName->$processURL[1]($processURL[2]);
+                            }else{
+                                $ClassName->$processURL[1]();
+                            }
                         }else{
                             $data = [
                                 'controladorName' => $processURL[0],
@@ -119,7 +122,6 @@ class Bubaphp{
             ];
             $this->ErrorPage('NoExistController', $data);
         }
-
     }
 
     public function jsonPOST()
