@@ -3,13 +3,17 @@
 define(__ORIGIN_REPO__, 'https://raw.githubusercontent.com/jmjauregui/bubapp_microPHP/master/RequestFiles/');
 
 $prompt = '';
-
+echo "\n\nBUBAPP V0.1";
+Start();
 
 
 while ($prompt != "EXIT") {
-	
-	 $prompt = readline("-> ");
+
+	 $prompt = strtoupper(readline("\n-> "));
 	 switch ($prompt) {
+	 	case 'INFO':
+	 			echo "\n\nBUBAPP V0.1 \n\n";
+	 		break;
 	 	case 'EXIT':
 	 			echo "\n\n\n ADIOS.....\n";
 	 		break;
@@ -17,30 +21,48 @@ while ($prompt != "EXIT") {
 	 			MakeFile();
 	 		break;
 	 	case 'CREATE':
-	 			$prompt = readline("Help to Create | \n---------------| PAGE | COMPONENT | SERVICE |PROYECT | \n ->");
+	 			$prompt = strtoupper(readline("\n>PAGE \n>COMPONENT \n>SERVICE \n>PROYECT \n>CONTROLLER \n\n[CREATE]: "));
 	 			Create($prompt);
+	 		break;
+	 	case 'CLEAR':
+	 			system('clear');
+	 		break;
+	 	case 'HELP':
+	 			Start();
 	 		break;
 	 	
 	 	default:
-	 		# code...
+	 		if ($prompt != '') {
+	 			echo "\n [404][Comando '".$prompt."' no reconocido] \n";
+	 		}
 	 		break;
 	 }
 
 }
 
+function Start()
+{
+	echo "\n| CREATE | HELP | INFO |\n";
+}
+
+
 function Create($prompt)
 {
 	 switch ($prompt) {
 	 	case 'PAGE':
-	 		# code...
+	 		Create_Page();
 	 		break;
 	 	
 	 	case 'COMPONENT':
 	 		# code...
 	 		break;
+
+	 	case 'CONTROLLER':
+	 		Create_Controloller();
+	 		break;
 	 	
 	 	case 'SERVICE':
-	 		# code...
+	 		Create_Service();
 	 		break;
 	 	
 	 	case 'PROYECT':
@@ -48,20 +70,21 @@ function Create($prompt)
 	 		break;
 	 	
 	 	default:
-	 		# code...
+	 		echo "\n [CREATE][Comando de creacion no reconocido] \n";
 	 		break;
 	 }
 }
+
+
 
 function Create_Proyect()
 {
 	if (CreateDIR('Core')) {
 			MakeFile('Core/bubaphp.php', file_get_contents(__ORIGIN_REPO__.'Core_Bubaphp.txt'));
-			MakeFile('Core/bubaphpModel.php', file_get_contents(__ORIGIN_REPO__.'Core_BubaphpModels.txt'));
+			MakeFile('Core/bubaphpModels.php', file_get_contents(__ORIGIN_REPO__.'Core_BubaphpModels.txt'));
 			MakeFile('Core/Configurations.php', file_get_contents(__ORIGIN_REPO__.'Core_Configuration.txt'));
 	}	
 	if (CreateDIR('Controller')) {
-
 	}	
 	if (CreateDIR('View')) {
 	}	
@@ -70,21 +93,118 @@ function Create_Proyect()
 
 	MakeFile('index.php', file_get_contents(__ORIGIN_REPO__.'index.txt'));
 	MakeFile('.htaccess', file_get_contents(__ORIGIN_REPO__.'htaccess.txt'));
-
-	
-
 	echo "\n";
-
 }
 
 
 
+function NOW()
+{
+    $ee = getdate();
+    return $ee['year']."-".$ee['mon']."-".$ee['mday']." ".$ee['hours'].":".$ee['minutes'].":".$ee['seconds'];
+}
+
+
+
+function Create_Page()
+{
+	$prompt = readline("-> Name Page: ");
+	if($prompt){
+		if (is_dir('Controller')) {
+			
+			$base64CodeController = "<?php\n\n/**\n * \n */\n\n\nclass ".ucfirst($prompt)." extends bubaphp\n{\n	\n\n	function __construct()\n	{\n		\n	}\n	public function index()\n	{\n		".base64_decode('JA==')."data = [\n			'SayHey' => '".ucfirst($prompt)."',\n		];\n		".base64_decode('JA==')."this->loadView('".ucfirst($prompt)."/index', ".base64_decode('JA==')."data);\n	}\n}\n\n?>";
+
+			MakeFile('Controller/'.ucfirst($prompt).'.php', base64_encode($base64CodeController));
+
+
+		}else{
+			echo "\n [CRITICAL ERROR]: Folder 'Controller' No Exist\n";
+			return 0;
+		}
+
+		if (is_dir('Model')) {
+			$base64CodeModel = "<?php\n\n/**\n * \n */\n\n\nclass Model".ucfirst($prompt)." extends bubaphpModel\n{\n	\n\n	function __construct()\n	{\n		\n	}\n	public function demo(".base64_decode('JA==')."data)\n	{\n 		return  ".base64_decode('JA==')."data; \n	}\n}\n\n?>";
+
+			MakeFile('Model/Model'.ucfirst($prompt).'.php', base64_encode($base64CodeModel));
+		}else{
+			echo "\n [CRITICAL ERROR]: Folder 'Model' No Exist\n";
+			return 0;
+		}
+
+
+		if (is_dir('View')) {
+			
+			if (CreateDIR('View/'.ucfirst($prompt))) {
+				$base64CodeController = "PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+Cgk8bWV0YSBjaGFyc2V0PSJVVEYtOCI+Cgk8dGl0bGU+QlVCQVBQIE1pY3JvUEhQPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KCgk8YnI+Cgk8YnI+Cgk8YnI+Cgk8YnI+Cgk8YnI+Cgk8Y2VudGVyPgoJCTxoMT48P3BocCBlY2hvICRwYXJhbXMtPlNheUhleSA/PiwgV2VsbGNvbWUgdG8gQnViYXBwPC9oMT4KCTwvY2VudGVyPgoJCjwvYm9keT4KPC9odG1sPgo=";
+				MakeFile('View/'.ucfirst($prompt).'/index.php', $base64CodeController);
+			}
+
+		}else{
+			echo "\n [CRITICAL ERROR]: Folder 'Model' No Exist\n";
+			return 0;
+		}
+
+
+	}
+}
  
 
 
+function Create_Controloller()
+{
+	$prompt = readline("-> Controller Name: ");
+	if($prompt){
+		if (is_dir('Controller')) {
+			
+			$base64CodeController = "<?php\n\n/**\n * \n */\n\n\nclass ".ucfirst($prompt)." extends bubaphp\n{\n	\n\n	function __construct()\n	{\n		\n	}\n	public function index()\n	{\n		".base64_decode('JA==')."data = [\n			'SayHey' => 'HEY',\n		];\n		".base64_decode('JA==')."this->loadView('".ucfirst($prompt)."/index', ".base64_decode('JA==')."data);\n	}\n}\n\n?>";
+
+			MakeFile('Controller/'.ucfirst($prompt).'.php', base64_encode($base64CodeController));
+		}else{
+			echo "\n [CRITICAL ERROR]: Folder 'Controller' No Exist";
+			return 0;
+		}
+		if (is_dir('Model')) {
+			$base64CodeModel = "<?php\n\n/**\n * \n */\n\n\nclass Model".ucfirst($prompt)." extends bubaphpModel\n{\n	\n\n	function __construct()\n	{\n		\n	}\n	public function demo(".base64_decode('JA==')."data)\n	{\n 		return  ".base64_decode('JA==')."data; \n	}\n}\n\n?>";
+
+			MakeFile('Model/Model'.ucfirst($prompt).'.php', base64_encode($base64CodeModel));
+		}else{
+			echo "\n [CRITICAL ERROR]: Folder 'Model' No Exist";
+			return 0;
+		}
+	}
+}
 
 
-
+function Create_Service()
+{
+	$prompt = ucfirst(readline("-> Service Name: "));
+	if ($prompt != '') {
+		$nombre_fichero = 'Controller/Services.php';
+		if (file_exists($nombre_fichero)) {
+		    echo "El fichero $nombre_fichero existe";
+		} else {
+		   	MakeFile('Controller/Services.php', '');
+		    if (CreateDIR('Controller/Services')) {
+		    	$data = [
+				    "ServicesNames" => [
+				        $prompt,
+				    ],
+				];
+		    	MakeFile('Controller/Services/ServiceConfig.json', base64_encode(json_encode($data)));
+		    	if (file_exists('Controller/Services/ServiceConfig.json')) {
+		    		$dataService = "<?php \n /**\n* Service: ".$prompt."\n*/\n\nclass ".$prompt."\n{\n	\n	function __construct()\n	{\n		# code...\n	}\n}\n\n?>";
+		   			MakeFile('Controller/Services/'.$prompt.'.php', base64_encode($dataService));
+		    	}else{
+		    		echo "\n [CRITICAL][Error desconocido] \n";
+		    		return 0;
+		    	}
+		    }else{
+		    	echo "\n [CRITICAL][No se puede crear la carpeta Services] \n";
+		    	return 0;
+		    }
+		}
+	}
+}
 
 
 // MISELANIUS AND UTILS
@@ -92,7 +212,7 @@ function Create_Proyect()
 function CreateDIR($Ruta)
 {
 	if (!is_dir($Ruta)) {
-		mkdir($Ruta, 0700);
+		mkdir($Ruta, 0775);
 		echo "\n | -> [DIR][OK] ".$Ruta;
 		return true;
 	}else{
@@ -107,8 +227,7 @@ function MakeFile($nameFile, $Content)
 	$txt = base64_decode($Content);
 	fwrite($myfile, $txt);
 	fclose($myfile);
-	echo "\n | ---> [FILE][CREATED] ".$nameFile;	
-
+	echo "\n | ---> [FILE][CREATED] ".$nameFile;
 }
 
 
