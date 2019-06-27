@@ -12,11 +12,9 @@ class Bubaphp{
         }
     }
 
-
-
     public function prepareUrlView($url)
     {
-        return 'views/'.$url.'.php';
+        return 'View/'.$url.'.php';
     }
 
     public function NOW()
@@ -27,27 +25,23 @@ class Bubaphp{
 
     public function prepareUrlModel($url)
     {
-        return 'models/'.$url.'.php';
+        return 'Model/'.$url.'.php';
     }
-
-
 
     public function prepareUrlController($url)
     {
-        return 'controller/'.$url.'.php';
+        return 'Controller/'.$url.'.php';
     }
 
     public function prepareUrlServices($url)
     {
-        return 'controller/Services/'.$url.'.php';
+        return 'Controller/Services/'.$url.'.php';
     }
 
     public function prepareUrlErrorPage($url)
     {
         return 'bubaphp/ErrorPages/'.$url.'.php';
     }
-
-
 
     public function loadView($get_Variable, $params = null){
         $urlFile = $this->prepareUrlView($get_Variable);
@@ -64,7 +58,6 @@ class Bubaphp{
             $this->ErrorPage('NoExistView', $data);
         }
     }
-
 
     public function ErrorPage($get_Variable, $params = null){
         $urlFile = $this->prepareUrlErrorPage($get_Variable);
@@ -116,10 +109,26 @@ class Bubaphp{
                         echo "Error";
                     }
                 }else{
-                    $ClassName->index();
+                    if (method_exists($ClassName, "index")) {
+                        $ClassName->index();
+                    }else{
+                        $data = [
+                            'controladorName' => $processURL[0],
+                            'methodName' => "INDEX",
+                        ];
+                        $this->ErrorPage('NoExistMethod', $data);
+                    }
                 }
             }else{
-                $ClassName->index();
+                if (method_exists($ClassName, "index")) {
+                    $ClassName->index();
+                }else{
+                    $data = [
+                        'controladorName' => $processURL[0],
+                        'methodName' => 'INDEX',
+                    ];
+                    $this->ErrorPage('NoExistMethod', $data);
+                }
             }
         }else{
             $data = [
@@ -132,7 +141,7 @@ class Bubaphp{
     public function LoadService($ServiceName){
         $urlServiceResponse = $this->prepareUrlServices($ServiceName);
         if (file_exists($urlServiceResponse)) {
-            $ServiceConfig = json_decode(file_get_contents('controller/Services/ServiceConfig.json'));
+            $ServiceConfig = json_decode(file_get_contents('Controller/Services/ServiceConfig.json'));
             
         }else{
 
