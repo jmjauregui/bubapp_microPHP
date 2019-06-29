@@ -25,7 +25,12 @@ while ($prompt != "EXIT") {
 	 			Create($prompt);
 	 		break;
 	 	case 'CLEAR':
-	 			system('clear');
+	 			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+	 				system('cls');
+				} else {
+	 				system('clear');
+
+				}
 	 		break;
 	 	case 'HELP':
 	 			Start();
@@ -85,23 +90,20 @@ function Create_Proyect()
 			MakeFile('Core/Configurations.php', file_get_contents(__ORIGIN_REPO__.'Core_Configuration.txt'));
 	}	
 	if (CreateDIR('Controller')) {
+			MakeFile('Controller/Home.php', file_get_contents(__ORIGIN_REPO__.'starterPack/Controller_Home.txt'));
 	}	
 	if (CreateDIR('View')) {
+		if (CreateDIR('View/MyFirstView')) {
+			MakeFile('View/MyFirstView/index.php', file_get_contents(__ORIGIN_REPO__.'starterPack/View_index.txt'));
+		}
 	}	
 	if (CreateDIR('Model')) {
+			MakeFile('Model/ModelHome.php', file_get_contents(__ORIGIN_REPO__.'starterPack/Model_Home.txt'));
 	}
 
 	MakeFile('index.php', file_get_contents(__ORIGIN_REPO__.'index.txt'));
 	MakeFile('.htaccess', file_get_contents(__ORIGIN_REPO__.'htaccess.txt'));
 	echo "\n";
-}
-
-
-
-function NOW()
-{
-    $ee = getdate();
-    return $ee['year']."-".$ee['mon']."-".$ee['mday']." ".$ee['hours'].":".$ee['minutes'].":".$ee['seconds'];
 }
 
 
@@ -181,9 +183,21 @@ function Create_Service()
 	if ($prompt != '') {
 		$nombre_fichero = 'Controller/Services.php';
 		if (file_exists($nombre_fichero)) {
-		    echo "El fichero $nombre_fichero existe";
+			$data = (array)json_decode(file_get_contents("Controller/Services/ServiceConfig.json"));
+		    array_push($data['ServicesNames'], $prompt);
+		    MakeFile('Controller/Services/ServiceConfig.json', base64_encode(json_encode($data)));
+
+		    $dataService = "<?php  \n/** \n* Service: ".$prompt." \n*/ \nclass ".$prompt." extends Bubaphp \n{ \n \n	function __construct() \n	{ \n		# code... \n	} \n	public function get() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	} \n	public function create() \n	{ \n		header('HTTP/1.0 201 SUCCESSFULLY CREATED'); \n	} \n	public function update() \n	{ \n		header('HTTP/1.0 202 ACCEPTED'); \n	} \n} \n?>";
+
+   			MakeFile('Controller/Services/'.$prompt.'.php', base64_encode($dataService));
+
+   			$Controllername = "ModelService".$prompt;
+   			$dataModelService = "<?php \n/**\n * \n */\nclass ".$Controllername." extends bubaphpModel\n{\n	\n	function __construct()\n	{\n		\n	}\n	public function Demo(".base64_decode('JA==')."algo)\n	{\n		return ".base64_decode('JA==')."algo;\n	}\n}\n?>";
+   			MakeFile('Model/'.$Controllername.'.php', base64_encode($dataModelService));
+   			echo "\nServicio creado con exito\n";
+
 		} else {
-		   	MakeFile('Controller/Services.php', '');
+		   	MakeFile('Controller/Services.php', file_get_contents(__ORIGIN_REPO__.'service/Controller_service.txt'));
 		    if (CreateDIR('Controller/Services')) {
 		    	$data = [
 				    "ServicesNames" => [
@@ -192,8 +206,15 @@ function Create_Service()
 				];
 		    	MakeFile('Controller/Services/ServiceConfig.json', base64_encode(json_encode($data)));
 		    	if (file_exists('Controller/Services/ServiceConfig.json')) {
-		    		$dataService = "<?php \n /**\n* Service: ".$prompt."\n*/\n\nclass ".$prompt."\n{\n	\n	function __construct()\n	{\n		# code...\n	}\n}\n\n?>";
+
+		    		$dataService = "<?php  \n/** \n* Service: ".$prompt." \n*/ \nclass ".$prompt." extends Bubaphp \n{ \n \n	function __construct() \n	{ \n		# code... \n	} \n	public function get() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	} \n	public function create() \n	{ \n		header('HTTP/1.0 201 SUCCESSFULLY CREATED'); \n	} \n	public function update() \n	{ \n		header('HTTP/1.0 202 ACCEPTED'); \n	} \n} \n?>";
+
 		   			MakeFile('Controller/Services/'.$prompt.'.php', base64_encode($dataService));
+
+		   			$Controllername = "ModelService".$prompt;
+		   			$dataModelService = "<?php \n/**\n * \n */\nclass ".$Controllername." extends bubaphpModel\n{\n	\n	function __construct()\n	{\n		\n	}\n	public function Demo(".base64_decode('JA==')."algo)\n	{\n		return ".base64_decode('JA==')."algo;\n	}\n}\n?>";
+		   			MakeFile('Model/'.$Controllername.'.php', base64_encode($dataModelService));
+   					echo "\nServicio creado con exito\n";
 		    	}else{
 		    		echo "\n [CRITICAL][Error desconocido] \n";
 		    		return 0;
@@ -230,9 +251,10 @@ function MakeFile($nameFile, $Content)
 	echo "\n | ---> [FILE][CREATED] ".$nameFile;
 }
 
-
-
+function NOW()
+{
+    $ee = getdate();
+    return $ee['year']."-".$ee['mon']."-".$ee['mday']." ".$ee['hours'].":".$ee['minutes'].":".$ee['seconds'];
+}
 
 ?>
-
-
