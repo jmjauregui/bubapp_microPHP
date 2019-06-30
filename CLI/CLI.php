@@ -186,8 +186,8 @@ function Create_Service()
 			$data = (array)json_decode(file_get_contents("Controller/Services/ServiceConfig.json"));
 		    array_push($data['ServicesNames'], $prompt);
 		    MakeFile('Controller/Services/ServiceConfig.json', base64_encode(json_encode($data)));
-
-		    $dataService = "<?php  \n/** \n* Service: ".$prompt." \n*/ \nclass ".$prompt." extends Bubaphp \n{ \n \n	function __construct() \n	{ \n		# code... \n	} \n	public function get() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	} \n	public function create() \n	{ \n		header('HTTP/1.0 201 SUCCESSFULLY CREATED'); \n	} \n	public function update() \n	{ \n		header('HTTP/1.0 202 ACCEPTED'); \n	} \n} \n?>";
+		    $dateCreated = NOW();
+		    $dataService = "<?php  \n/** \n* Service: ".$prompt."\n* Created: ".$dateCreated."\n*/ \nclass ".$prompt." extends Bubaphp \n{ \n\n	function __construct() \n	{ \n		header('Content-Type: application/json');\n		\n	}\n	public function index() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	}  \n	public function get() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	} \n	public function create() \n	{ \n		header('HTTP/1.0 201 SUCCESSFULLY CREATED'); \n	} \n	public function update() \n	{ \n		header('HTTP/1.0 202 ACCEPTED'); \n	} \n} \n?>";
 
    			MakeFile('Controller/Services/'.$prompt.'.php', base64_encode($dataService));
 
@@ -206,8 +206,8 @@ function Create_Service()
 				];
 		    	MakeFile('Controller/Services/ServiceConfig.json', base64_encode(json_encode($data)));
 		    	if (file_exists('Controller/Services/ServiceConfig.json')) {
-
-		    		$dataService = "<?php  \n/** \n* Service: ".$prompt." \n*/ \nclass ".$prompt." extends Bubaphp \n{ \n \n	function __construct() \n	{ \n		# code... \n	} \n	public function get() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	} \n	public function create() \n	{ \n		header('HTTP/1.0 201 SUCCESSFULLY CREATED'); \n	} \n	public function update() \n	{ \n		header('HTTP/1.0 202 ACCEPTED'); \n	} \n} \n?>";
+		    		$dateCreated = NOW();
+		    		$dataService = "<?php  \n/** \n* Service: ".$prompt."\n* Created: ".$dateCreated."\n*/ \nclass ".$prompt." extends Bubaphp \n{ \n\n	function __construct() \n	{ \n		header('Content-Type: application/json');\n		\n	}\n	public function index() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	}  \n	public function get() \n	{ \n		header('HTTP/1.0 200 GET operation completed'); \n	} \n	public function create() \n	{ \n		header('HTTP/1.0 201 SUCCESSFULLY CREATED'); \n	} \n	public function update() \n	{ \n		header('HTTP/1.0 202 ACCEPTED'); \n	} \n} \n?>";
 
 		   			MakeFile('Controller/Services/'.$prompt.'.php', base64_encode($dataService));
 
