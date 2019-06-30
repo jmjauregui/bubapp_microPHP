@@ -257,4 +257,7 @@ function NOW()
     return $ee['year']."-".$ee['mon']."-".$ee['mday']." ".$ee['hours'].":".$ee['minutes'].":".$ee['seconds'];
 }
 
+
+
+
 ?>

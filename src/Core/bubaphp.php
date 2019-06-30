@@ -12,34 +12,28 @@ class Bubaphp{
         }
     }
 
-    public function prepareUrlView($url)
-    {
+    public function prepareUrlView($url){
         return 'View/'.$url.'.php';
     }
 
-    public function NOW()
-    {
+    public function NOW(){
         $ee = getdate();
         return $ee['year']."-".$ee['mon']."-".$ee['mday']." ".$ee['hours'].":".$ee['minutes'].":".$ee['seconds'];
     }
 
-    public function prepareUrlModel($url)
-    {
+    public function prepareUrlModel($url){
         return 'Model/'.$url.'.php';
     }
 
-    public function prepareUrlController($url)
-    {
+    public function prepareUrlController($url){
         return 'Controller/'.$url.'.php';
     }
 
-    public function prepareUrlServices($url)
-    {
+    public function prepareUrlServices($url){
         return 'Controller/Services/'.$url.'.php';
     }
 
-    public function prepareUrlErrorPage($url)
-    {
+    public function prepareUrlErrorPage($url){
         return 'bubaphp/ErrorPages/'.$url.'.php';
     }
 
@@ -58,6 +52,7 @@ class Bubaphp{
             $this->ErrorPage('NoExistView', $data);
         }
     }
+
 
     public function ErrorPage($get_Variable, $params = null){
         $urlFile = $this->prepareUrlErrorPage($get_Variable);
@@ -92,9 +87,13 @@ class Bubaphp{
             if (count($processURL) > 1) {
                 if ($processURL[1] != '') {
                     try {
-                        if (method_exists($ClassName,$processURL[1])) {
+                        if (method_exists($ClassName,'index')) {
                             if ($processURL[0] == 'Services') {
-                                $ClassName->$processURL[1]($processURL[2]);
+                                $data = [];
+                                for ($i=2; $i < count($processURL); $i++) { 
+                                    array_push($data, $processURL[$i]);
+                                }
+                                $this->LoadService($ClassName,$processURL[1], $data);
                             }else{
                                 $ClassName->$processURL[1]();
                             }
@@ -109,26 +108,10 @@ class Bubaphp{
                         echo "Error";
                     }
                 }else{
-                    if (method_exists($ClassName, "index")) {
-                        $ClassName->index();
-                    }else{
-                        $data = [
-                            'controladorName' => $processURL[0],
-                            'methodName' => "INDEX",
-                        ];
-                        $this->ErrorPage('NoExistMethod', $data);
-                    }
+                    $ClassName->index();
                 }
             }else{
-                if (method_exists($ClassName, "index")) {
-                    $ClassName->index();
-                }else{
-                    $data = [
-                        'controladorName' => $processURL[0],
-                        'methodName' => 'INDEX',
-                    ];
-                    $this->ErrorPage('NoExistMethod', $data);
-                }
+                $ClassName->index();
             }
         }else{
             $data = [
@@ -138,13 +121,17 @@ class Bubaphp{
         }
     }
 
-    public function LoadService($ServiceName){
+    public function LoadService($clase,$ServiceName, $params = []){
         $urlServiceResponse = $this->prepareUrlServices($ServiceName);
         if (file_exists($urlServiceResponse)) {
             $ServiceConfig = json_decode(file_get_contents('Controller/Services/ServiceConfig.json'));
-            
+            if (count($params) > 0 ) {
+                $clase->index($urlServiceResponse,$ServiceName, $params);
+            }else{
+                $clase->index($urlServiceResponse,$ServiceName);
+            }
         }else{
-
+            echo "EL servicio no existe";
         }
     }
 
